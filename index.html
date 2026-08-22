@@ -1,159 +1,55 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#123b2f">
-  <title>陸上スタート信号</title>
-  <style>
-    :root{--green:#123b2f;--green2:#1d6951;--cream:#f5f3eb;--red:#d63b35;--yellow:#e5a82c;--ink:#17201d}
-    *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    button,input{font:inherit}.app{max-width:620px;min-height:100dvh;margin:auto;padding:20px 16px 36px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-    h1{font-size:21px;margin:0}.card{background:#fff;border:1px solid #d9ddd8;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #10251c0b}
-    .status{display:flex;align-items:center;gap:10px}.dot{width:13px;height:13px;border-radius:50%;background:#999;box-shadow:0 0 0 4px #9992}.dot.good{background:#28a56f}.dot.warn{background:#e5a82c}.dot.bad{background:#d63b35}
-    .muted{color:#69736f;font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.role{min-height:92px;border:2px solid var(--green2);background:#fff;color:var(--green);border-radius:16px;font-weight:800;font-size:17px}
-    .roomRow{display:flex;gap:8px}.roomRow input{width:100%;font-size:27px;letter-spacing:.15em;text-align:center;border:1px solid #bcc6c0;border-radius:12px;padding:10px}
-    .small{border:0;border-radius:12px;background:var(--green);color:#fff;padding:0 16px;font-weight:700}.signals{display:grid;gap:12px}.signal{min-height:82px;border:0;border-radius:18px;color:#fff;font-weight:900;font-size:21px;box-shadow:0 5px 0 #0002;touch-action:manipulation}.signal:active{transform:translateY(3px);box-shadow:0 2px 0 #0002}.marks{background:#2f6ea5}.set{background:var(--yellow);color:#201b0b}.gun{background:var(--red);font-size:26px}.signal:disabled{background:#a7afab;color:#eef0ef;box-shadow:none}
-    .secondary{width:100%;border:1px solid var(--green2);background:#fff;color:var(--green);border-radius:12px;padding:13px;font-weight:800}.hidden{display:none!important}.kv{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:14px;padding:6px 0;border-bottom:1px solid #edf0ee}.kv:last-child{border:0}.tag{font-weight:800}.notice{padding:11px;border-radius:10px;background:#edf6f1;font-size:14px;margin-top:10px}.danger{background:#fff0ef;color:#942b27}.back{border:0;background:transparent;color:var(--green2);font-weight:800;padding:8px}
-  </style>
-</head>
-<body>
-<main class="app">
-  <div class="top"><h1>陸上スタート信号</h1><button id="backBtn" class="back hidden">役割変更</button></div>
-
-  <section id="setup">
-    <div class="card"><strong>この端末の役割</strong><p class="muted">操作側で部屋を作り、音声側から同じ番号に接続します。</p>
-      <div class="grid"><button id="controllerRole" class="role">操作端末</button><button id="receiverRole" class="role">音声端末</button></div>
-    </div>
-  </section>
-
-  <section id="main" class="hidden">
-    <div class="card">
-      <div class="status"><span id="statusDot" class="dot"></span><div><strong id="statusTitle">接続準備中</strong><div id="statusSub" class="muted">Firebaseを確認しています</div></div></div>
-      <div id="roomCreate" class="hidden notice">ルーム番号：<strong id="createdRoom" style="font-size:24px;letter-spacing:.12em"></strong></div>
-      <div id="roomJoin" class="hidden" style="margin-top:12px"><div class="roomRow"><input id="roomInput" inputmode="numeric" maxlength="6" placeholder="6桁番号"><button id="joinBtn" class="small">接続</button></div></div>
-    </div>
-
-    <div class="card">
-      <div class="kv"><span>Firebase</span><span id="serverState" class="tag">確認中</span></div>
-      <div class="kv"><span>相手端末</span><span id="peerState" class="tag">未接続</span></div>
-      <div class="kv"><span>応答時間</span><span id="latency" class="tag">-- ms</span></div>
-      <div class="kv"><span>最終信号</span><span id="lastSignal" class="tag">なし</span></div>
-    </div>
-
-    <div id="controllerPanel" class="card hidden">
-      <div class="signals">
-        <button class="signal marks" data-command="MARKS" disabled>ON YOUR MARKS</button>
-        <button class="signal set" data-command="SET" disabled>SET</button>
-        <button class="signal gun" data-command="GUN" disabled>号砲</button>
-      </div>
-      <div id="sendState" class="notice">音声端末の接続を待っています</div>
-    </div>
-
-    <div id="receiverPanel" class="card hidden">
-      <button id="enableAudio" class="secondary">音声を有効化・テスト</button>
-      <div id="audioState" class="notice danger">最初に音声を有効化してください</div>
-    </div>
-  </section>
-</main>
-
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#123b2f">
+<title>陸上スタート信号</title>
+<style>
+:root{--g:#123b2f;--g2:#1d6951;--bg:#f5f3eb;--b:#2f6ea5;--r:#d63b35;--y:#e5a82c;--ink:#17201d;--gray:#a7afab}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}.app{max-width:620px;min-height:100dvh;margin:auto;padding:20px 16px 36px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}h1{font-size:21px;margin:0}.card{background:#fff;border:1px solid #d9ddd8;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #10251c0b}.hidden{display:none!important}.muted{color:#69736f;font-size:13px}.grid,.switches,.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.role{min-height:92px;border:2px solid var(--g2);background:#fff;color:var(--g);border-radius:16px;font-weight:800;font-size:17px}.status{display:flex;align-items:center;gap:10px}.dot{width:13px;height:13px;border-radius:50%;background:#999;box-shadow:0 0 0 4px #9992}.dot.good{background:#28a56f}.dot.warn{background:var(--y)}.dot.bad{background:var(--r)}.roomRow{display:flex;gap:8px}.roomRow input{width:100%;font-size:27px;letter-spacing:.15em;text-align:center;border:1px solid #bcc6c0;border-radius:12px;padding:10px}.small{border:0;border-radius:12px;background:var(--g);color:#fff;padding:0 16px;font-weight:700}.kv{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:14px;padding:6px 0;border-bottom:1px solid #edf0ee}.kv:last-child{border:0}.tag{font-weight:800}.notice{padding:11px;border-radius:10px;background:#edf6f1;font-size:14px;margin-top:10px}.danger{background:#fff0ef;color:#942b27}.back{border:0;background:transparent;color:var(--g2);font-weight:800;padding:8px}.switch{border:1px solid #aebbb5;background:#edf0ee;color:#52605a;border-radius:14px;padding:13px 10px;font-weight:900}.switch.on{border-color:var(--g2);background:var(--g2);color:#fff}.switch span{display:block;font-size:12px;margin-top:3px;opacity:.8}.signals{display:grid;gap:12px}.signal{min-height:80px;border:0;border-radius:18px;color:#fff;font-weight:900;font-size:21px;box-shadow:0 5px 0 #0002;touch-action:manipulation}.signal:active{transform:translateY(3px)}.marks{background:var(--b)}.set{background:var(--y);color:#201b0b}.gun{background:var(--r);font-size:26px}.signal:disabled,.primary:disabled,.stop:disabled{background:var(--gray);color:#eef0ef;box-shadow:none}.programGrid{display:grid;grid-template-columns:1fr 110px;gap:12px;align-items:center}.programGrid label{font-weight:700}.timeInput{width:78px;border:1px solid #bcc6c0;border-radius:12px;padding:11px;text-align:right;font-weight:800}.primary,.stop,.secondary{width:100%;border:0;border-radius:14px;padding:14px;font-weight:900}.primary{background:var(--g);color:#fff}.stop{background:var(--r);color:#fff}.secondary{border:1px solid var(--g2);background:#fff;color:var(--g)}.actions{margin-top:14px}.timer{font-variant-numeric:tabular-nums;text-align:center;font-size:49px;font-weight:900;padding:5px 0 12px}.running{color:var(--r)}
+</style></head>
+<body><main class="app">
+<div class="top"><h1>陸上スタート信号</h1><button id="backBtn" class="back hidden">役割変更</button></div>
+<section id="setup"><div class="card"><strong>この端末の役割</strong><p class="muted">操作側で部屋を作り、音声側から同じ番号に接続します。</p><div class="grid"><button id="controllerRole" class="role">操作端末</button><button id="receiverRole" class="role">音声端末</button></div></div></section>
+<section id="main" class="hidden">
+<div class="card"><div class="status"><span id="statusDot" class="dot"></span><div><strong id="statusTitle">接続準備中</strong><div id="statusSub" class="muted">Firebaseを確認しています</div></div></div><div id="roomCreate" class="hidden notice">ルーム番号：<strong id="createdRoom" style="font-size:24px;letter-spacing:.12em"></strong></div><div id="roomJoin" class="hidden" style="margin-top:12px"><div class="roomRow"><input id="roomInput" inputmode="numeric" maxlength="6" placeholder="6桁番号"><button id="joinBtn" class="small">接続</button></div></div></div>
+<div class="card"><div class="kv"><span>Firebase</span><span id="serverState" class="tag">確認中</span></div><div class="kv"><span>相手端末</span><span id="peerState" class="tag">未接続</span></div><div class="kv"><span>音声準備</span><span id="peerAudioState" class="tag">--</span></div><div class="kv"><span>応答時間</span><span id="latency" class="tag">-- ms</span></div><div class="kv"><span>最終信号</span><span id="lastSignal" class="tag">なし</span></div></div>
+<div id="controllerPanel" class="hidden">
+<div class="card"><div class="switches"><button id="programToggle" class="switch" aria-pressed="false">プログラム<span>OFF（手動）</span></button><button id="timerToggle" class="switch" aria-pressed="false">タイマー<span>OFF</span></button></div></div>
+<div id="manualPanel" class="card"><div class="signals"><button class="signal marks commandBtn" data-command="MARKS" disabled>ON YOUR MARKS</button><button class="signal set commandBtn" data-command="SET" disabled>SET</button><button class="signal gun commandBtn" data-command="GUN" disabled>号砲</button></div></div>
+<div id="programPanel" class="card hidden"><div class="programGrid"><label>On your marks → Set</label><div><input id="marksDelay" class="timeInput" type="number" min="0" max="60" step="0.1" value="3.0">秒</div><label>Set → 号砲</label><div><input id="setDelay" class="timeInput" type="number" min="0" max="60" step="0.1" value="1.5">秒</div></div><div class="actions"><button id="programStart" class="primary" disabled>プログラム開始</button><button id="programCancel" class="secondary" disabled>中止</button></div></div>
+<div id="timerPanel" class="card hidden"><div id="timerDisplay" class="timer">00:00.00</div><div class="actions"><button id="stopTimer" class="stop" disabled>STOP</button><button id="resetTimer" class="secondary">リセット</button></div></div>
+<div id="sendState" class="notice">音声端末の接続を待っています</div></div>
+<div id="receiverPanel" class="card hidden"><button id="enableAudio" class="secondary">固定音声を読み込む・テスト</button><div id="audioState" class="notice danger">最初に固定音声を読み込んでください</div><div id="receiverProgramState" class="notice hidden"></div></div>
+</section></main>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue, onDisconnect } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-
-  // ここをFirebaseコンソールに表示されたfirebaseConfigへ置き換えてください。
-const firebaseConfig = {
-  apiKey: "AIzaSyCqQXleWglwTPyJ2opo0PcrehQAFqMFATI",
-databaseURL: "https://track-start-signal-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "track-start-signal",
-  storageBucket: "track-start-signal.firebasestorage.app",
-  messagingSenderId: "28071714460",
-  appId: "1:28071714460:web:098d60b43fa64391f11759",
-  measurementId: "G-W3W2RYCQXZ"
-};
-
-  const $ = (id) => document.getElementById(id);
-  const labels = {MARKS:"ON YOUR MARKS", SET:"SET", GUN:"号砲"};
-  let db, role, peerRole, roomId, connected=false, peerOnline=false, audioReady=false;
-  let lastCommandId="", heartbeatTimer, probeTimer, lastPeerSeen=0, latencyMs=null, audioContext;
-
-  try {
-    const app = initializeApp(firebaseConfig); db = getDatabase(app);
-    onValue(ref(db,".info/connected"), snap => { connected=!!snap.val(); render(); });
-  } catch(e) {
-    $("statusTitle").textContent="Firebase設定が未完了"; $("statusSub").textContent="index.htmlのfirebaseConfigを確認してください";
-  }
-
-  $("controllerRole").onclick=()=>selectRole("controller");
-  $("receiverRole").onclick=()=>selectRole("receiver");
-  $("backBtn").onclick=()=>location.reload();
-  $("joinBtn").onclick=()=>{const value=$("roomInput").value.trim();if(/^\d{6}$/.test(value)) joinRoom(value);else alert("6桁の番号を入力してください");};
-  $("enableAudio").onclick=enableAudio;
-  document.querySelectorAll("[data-command]").forEach(b=>b.onclick=()=>sendCommand(b.dataset.command));
-
-  function selectRole(selected){
-    if(!db){alert("先にfirebaseConfigを設定してください");return;}
-    role=selected; peerRole=role==="controller"?"receiver":"controller";
-    $("setup").classList.add("hidden"); $("main").classList.remove("hidden"); $("backBtn").classList.remove("hidden");
-    $(role+"Panel").classList.remove("hidden");
-    if(role==="controller") { roomId=String(Math.floor(100000+Math.random()*900000)); $("roomCreate").classList.remove("hidden"); $("createdRoom").textContent=roomId; joinRoom(roomId); }
-    else $("roomJoin").classList.remove("hidden");
-    render();
-  }
-
-  function joinRoom(id){
-    roomId=id; $("roomJoin").classList.add("hidden"); startPresence(); listenRoom(); render();
-  }
-
-  function startPresence(){
-    clearInterval(heartbeatTimer); clearInterval(probeTimer);
-    const presenceRef=ref(db,`rooms/${roomId}/presence/${role}`);
-    onDisconnect(presenceRef).remove();
-    const beat=()=>set(presenceRef,{online:true,lastSeen:Date.now()}); beat(); heartbeatTimer=setInterval(beat,2000);
-    const probe=()=>set(ref(db,`rooms/${roomId}/probes/${role}`),{id:crypto.randomUUID(),sentAt:Date.now()}); probe(); probeTimer=setInterval(probe,3000);
-  }
-
-  function listenRoom(){
-    onValue(ref(db,`rooms/${roomId}/presence/${peerRole}`),snap=>{const v=snap.val();lastPeerSeen=v?.lastSeen||0;render();});
-    onValue(ref(db,`rooms/${roomId}/probes/${peerRole}`),snap=>{const p=snap.val();if(p?.id)set(ref(db,`rooms/${roomId}/echoes/${peerRole}`),{id:p.id,sentAt:p.sentAt,echoedAt:Date.now()});});
-    onValue(ref(db,`rooms/${roomId}/echoes/${role}`),snap=>{const e=snap.val();if(e?.sentAt){latencyMs=Date.now()-e.sentAt;render();}});
-    if(role==="receiver") onValue(ref(db,`rooms/${roomId}/command`),async snap=>{
-      const c=snap.val(); if(!c||c.id===lastCommandId||Date.now()-c.sentAt>3000)return; lastCommandId=c.id;
-      if(!audioReady){await set(ref(db,`rooms/${roomId}/ack`),{id:c.id,status:"audio_blocked",at:Date.now()});return;}
-      play(c.type); $("lastSignal").textContent=labels[c.type]||c.type;
-      await set(ref(db,`rooms/${roomId}/ack`),{id:c.id,status:"played",at:Date.now()});
-    });
-    if(role==="controller") onValue(ref(db,`rooms/${roomId}/ack`),snap=>{const a=snap.val();if(!a)return;$("sendState").textContent=a.status==="played"?"音声端末で再生しました":"音声端末の音声が有効ではありません";});
-  }
-
-  async function sendCommand(type){
-    if(!peerOnline)return; const id=crypto.randomUUID(); $("lastSignal").textContent=labels[type]; $("sendState").textContent="送信中…";
-    await set(ref(db,`rooms/${roomId}/command`),{id,type,sentAt:Date.now()});
-    setTimeout(()=>{if($("sendState").textContent==="送信中…")$("sendState").textContent="応答待ち（通信を確認してください）";},1500);
-  }
-
-  async function enableAudio(){
-    audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)(); await audioContext.resume(); audioReady=true;
-    speak("Audio ready"); setTimeout(()=>playGun(),700); $("audioState").classList.remove("danger"); $("audioState").textContent="音声準備完了"; render();
-  }
-
-  function play(type){ if(type==="GUN")playGun(); else speak(type==="MARKS"?"On your marks":"Set"); }
-  function speak(text){const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=.82;u.pitch=.9;u.volume=1;speechSynthesis.cancel();speechSynthesis.speak(u);}
-  function playGun(){
-    if(!audioContext)return; const sr=audioContext.sampleRate, len=Math.floor(sr*.22), buffer=audioContext.createBuffer(1,len,sr), data=buffer.getChannelData(0);
-    for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
-    const src=audioContext.createBufferSource(), gain=audioContext.createGain();src.buffer=buffer;gain.gain.setValueAtTime(1,audioContext.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.22);src.connect(gain).connect(audioContext.destination);src.start();
-  }
-
-  function render(){
-    peerOnline=Date.now()-lastPeerSeen<7000;
-    $("serverState").textContent=connected?"接続済み":"切断"; $("peerState").textContent=peerOnline?"オンライン":"未接続"; $("latency").textContent=latencyMs==null?"-- ms":`${latencyMs} ms`;
-    const quality=!connected||!peerOnline?"bad":latencyMs!=null&&latencyMs>800?"bad":latencyMs!=null&&latencyMs>300?"warn":"good";
-    $("statusDot").className=`dot ${quality}`; $("statusTitle").textContent=!connected?"サーバー切断":!peerOnline?"相手端末を待機中":quality==="good"?"接続良好":quality==="warn"?"やや不安定":"通信不安定";
-    $("statusSub").textContent=roomId?`ルーム ${roomId}`:"ルーム未接続";
-    document.querySelectorAll("[data-command]").forEach(b=>b.disabled=!(connected&&peerOnline));
-  }
-  setInterval(render,1000);
-</script>
-</body>
-</html>
+import{initializeApp}from"https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";import{getDatabase,ref,set,onValue,onDisconnect}from"https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyCqQXleWglwTPyJ2opo0PcrehQAFqMFATI",authDomain:"track-start-signal.firebaseapp.com",databaseURL:"https://track-start-signal-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"track-start-signal",storageBucket:"track-start-signal.firebasestorage.app",messagingSenderId:"28071714460",appId:"1:28071714460:web:098d60b43fa64391f11759"};
+const SOUNDS={MARKS:"./sounds/on-your-marks.mp3",SET:"./sounds/set.mp3",GUN:"./sounds/gun.wav"},LABELS={MARKS:"ON YOUR MARKS",SET:"SET",GUN:"号砲"};const $=id=>document.getElementById(id),uid=()=>crypto.randomUUID?.()||Date.now()+"-"+Math.random();
+let db,role,peerRole,roomId,connected=false,peerOnline=false,peerAudioReady=false,audioReady=false,lastPeerSeen=0,latencyMs=null,serverOffset=0,beatTimer,probeTimer,lastCommandId="",ctx,buffers={},sources=[],programRunning=false,programOn=false,timerOn=false,pendingTimerId="",timerStart=null,timerStop=null,timerFrame;
+try{db=getDatabase(initializeApp(firebaseConfig));onValue(ref(db,".info/connected"),s=>{connected=!!s.val();render()});onValue(ref(db,".info/serverTimeOffset"),s=>serverOffset=Number(s.val())||0)}catch(e){$("statusTitle").textContent="Firebase設定エラー";$("statusSub").textContent=e.message}
+const serverNow=()=>Date.now()+serverOffset;
+$("controllerRole").onclick=()=>selectRole("controller");$("receiverRole").onclick=()=>selectRole("receiver");$("backBtn").onclick=()=>location.reload();$("joinBtn").onclick=()=>{let v=$("roomInput").value.trim();/^\d{6}$/.test(v)?joinRoom(v):alert("6桁の番号を入力してください")};$("enableAudio").onclick=enableAudio;$("programToggle").onclick=toggleProgram;$("timerToggle").onclick=toggleTimer;document.querySelectorAll("[data-command]").forEach(b=>b.onclick=()=>sendManual(b.dataset.command));$("programStart").onclick=startProgram;$("programCancel").onclick=cancelProgram;$("stopTimer").onclick=stopwatchStop;$("resetTimer").onclick=stopwatchReset;
+function selectRole(v){if(!db)return alert("Firebaseへ接続できません");role=v;peerRole=v==="controller"?"receiver":"controller";$("setup").classList.add("hidden");$("main").classList.remove("hidden");$("backBtn").classList.remove("hidden");$(v+"Panel").classList.remove("hidden");if(v==="controller"){roomId=String(Math.floor(100000+Math.random()*900000));$("roomCreate").classList.remove("hidden");$("createdRoom").textContent=roomId;joinRoom(roomId)}else $("roomJoin").classList.remove("hidden");render()}
+function joinRoom(id){roomId=id;$("roomJoin").classList.add("hidden");presence();listeners();render()}
+function presence(){clearInterval(beatTimer);clearInterval(probeTimer);let p=ref(db,`rooms/${roomId}/presence/${role}`);onDisconnect(p).remove();let beat=()=>set(p,{online:true,lastSeen:Date.now(),audioReady:role==="receiver"?audioReady:true});beat();beatTimer=setInterval(beat,2000);let probe=()=>set(ref(db,`rooms/${roomId}/probes/${role}`),{id:uid(),sentAt:Date.now()});probe();probeTimer=setInterval(probe,3000)}
+function listeners(){onValue(ref(db,`rooms/${roomId}/presence/${peerRole}`),s=>{let v=s.val();lastPeerSeen=v?.lastSeen||0;peerAudioReady=peerRole==="receiver"?!!v?.audioReady:true;render()});onValue(ref(db,`rooms/${roomId}/probes/${peerRole}`),s=>{let p=s.val();if(p?.id)set(ref(db,`rooms/${roomId}/echoes/${peerRole}`),{id:p.id,sentAt:p.sentAt})});onValue(ref(db,`rooms/${roomId}/echoes/${role}`),s=>{let e=s.val();if(e?.sentAt){latencyMs=Date.now()-e.sentAt;render()}});if(role==="receiver")onValue(ref(db,`rooms/${roomId}/command`),s=>receive(s.val()));if(role==="controller")onValue(ref(db,`rooms/${roomId}/ack`),s=>receiveAck(s.val()))}
+async function enableAudio(){try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();await ctx.resume();$("audioState").classList.remove("danger");$("audioState").textContent="固定音声を読み込み中…";for(let[k,u]of Object.entries(SOUNDS)){let r=await fetch(u,{cache:"force-cache"});if(!r.ok)throw Error(u+"を取得できません");buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}audioReady=true;presence();play("SET",ctx.currentTime+.05);$("audioState").textContent="音声準備完了（SETをテスト再生）";render()}catch(e){audioReady=false;$("audioState").classList.add("danger");$("audioState").textContent="音声読込エラー："+e.message}}
+function play(type,at){let s=ctx.createBufferSource();s.buffer=buffers[type];s.connect(ctx.destination);s.start(at);sources.push(s);s.onended=()=>sources=sources.filter(x=>x!==s)}
+function cancelSounds(){sources.forEach(s=>{try{s.stop()}catch{}});sources=[];programRunning=false}
+async function receive(c){if(!c||c.id===lastCommandId||Date.now()-c.sentAt>5000)return;lastCommandId=c.id;if(c.type==="CANCEL"){cancelSounds();showProgram("プログラムを中止しました");return ack(c.id,"cancelled")}if(!audioReady)return ack(c.id,"audio_blocked");if(c.type==="PROGRAM")return schedule(c);let at=ctx.currentTime+.035;play(c.type,at);$("lastSignal").textContent=LABELS[c.type];ack(c.id,"played",{type:c.type,startedAt:serverNow()+35,timerEnabled:!!c.timerEnabled})}
+async function schedule(c){cancelSounds();programRunning=true;let d1=limit(c.marksToSetSeconds),d2=limit(c.setToGunSeconds),base=ctx.currentTime+.12,setAt=base+buffers.MARKS.duration+d1,gunAt=setAt+buffers.SET.duration+d2;play("MARKS",base);play("SET",setAt);play("GUN",gunAt);let gunStartedAt=serverNow()+(gunAt-ctx.currentTime)*1000;showProgram("実行中：号砲まで約"+(gunAt-ctx.currentTime).toFixed(1)+"秒");setTimeout(()=>{$("lastSignal").textContent="号砲";showProgram("プログラム完了");programRunning=false},Math.max(0,(gunAt-ctx.currentTime)*1000));ack(c.id,"program_scheduled",{gunStartedAt,timerEnabled:!!c.timerEnabled})}
+function showProgram(t){$("receiverProgramState").classList.remove("hidden");$("receiverProgramState").textContent=t}function ack(id,status,x={}){return set(ref(db,`rooms/${roomId}/ack`),{id,status,at:Date.now(),...x})}
+async function sendManual(type){if(!ready())return;let id=uid();$("lastSignal").textContent=LABELS[type];$("sendState").textContent="送信中…";if(type==="GUN"&&timerOn){pendingTimerId=id;stopwatchReset()}await set(ref(db,`rooms/${roomId}/command`),{id,type,timerEnabled:type==="GUN"&&timerOn,sentAt:Date.now()})}
+async function startProgram(){if(!ready())return;let a=valid($("marksDelay")),b=valid($("setDelay"));if(a===null||b===null)return;let id=uid();programRunning=true;pendingTimerId=timerOn?id:"";stopwatchReset();$("sendState").textContent="プログラムを送信中…";render();await set(ref(db,`rooms/${roomId}/command`),{id,type:"PROGRAM",marksToSetSeconds:a,setToGunSeconds:b,timerEnabled:timerOn,sentAt:Date.now()})}
+async function cancelProgram(){programRunning=false;pendingTimerId="";await set(ref(db,`rooms/${roomId}/command`),{id:uid(),type:"CANCEL",sentAt:Date.now()});$("sendState").textContent="中止信号を送信しました";render()}
+function receiveAck(a){if(!a)return;if(a.status==="audio_blocked")return $("sendState").textContent="音声端末で固定音声を読み込んでください";if(a.status==="cancelled"){programRunning=false;$("sendState").textContent="プログラムを中止しました";return render()}if(a.status==="program_scheduled"){programRunning=true;$("sendState").textContent="音声端末内でプログラム実行中";if(a.id===pendingTimerId&&a.timerEnabled)stopwatchStart(a.gunStartedAt);setTimeout(()=>{programRunning=false;render()},Math.max(0,Number(a.gunStartedAt)-serverNow())+250);return render()}if(a.status==="played"){$("sendState").textContent="音声端末で再生しました";if(a.id===pendingTimerId&&a.type==="GUN"&&a.timerEnabled)stopwatchStart(a.startedAt)}}
+function toggleProgram(){programOn=!programOn;$("programToggle").classList.toggle("on",programOn);$("programToggle").setAttribute("aria-pressed",programOn);$("programToggle").querySelector("span").textContent=programOn?"ON（自動）":"OFF（手動）";$("manualPanel").classList.toggle("hidden",programOn);$("programPanel").classList.toggle("hidden",!programOn);render()}
+function toggleTimer(){timerOn=!timerOn;$("timerToggle").classList.toggle("on",timerOn);$("timerToggle").setAttribute("aria-pressed",timerOn);$("timerToggle").querySelector("span").textContent=timerOn?"ON":"OFF";$("timerPanel").classList.toggle("hidden",!timerOn);if(!timerOn)stopwatchReset()}
+function stopwatchStart(t){timerStart=Number(t);timerStop=null;$("timerDisplay").classList.add("running");$("stopTimer").disabled=true;setTimeout(()=>{if(timerStart!==null&&timerStop===null)$("stopTimer").disabled=false},Math.max(0,timerStart-serverNow()));cancelAnimationFrame(timerFrame);tick()}
+function tick(){if(timerStart===null)return;draw(Math.max(0,(timerStop??serverNow())-timerStart));if(timerStop===null)timerFrame=requestAnimationFrame(tick)}
+function stopwatchStop(){if(timerStart===null||timerStop!==null)return;timerStop=serverNow();cancelAnimationFrame(timerFrame);$("timerDisplay").classList.remove("running");$("stopTimer").disabled=true;draw(Math.max(0,timerStop-timerStart))}
+function stopwatchReset(){cancelAnimationFrame(timerFrame);timerStart=timerStop=null;$("timerDisplay").classList.remove("running");$("stopTimer").disabled=true;draw(0)}
+function draw(ms){let t=Math.floor(ms/10),cs=t%100,s=Math.floor(t/100)%60,m=Math.floor(t/6000);$("timerDisplay").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")+"."+String(cs).padStart(2,"0")}
+function limit(v){return Math.min(60,Math.max(0,Number(v)||0))}function valid(i){let n=Number(i.value);if(!Number.isFinite(n)||n<0||n>60){alert("時間は0〜60秒で入力してください");i.focus();return null}return Math.round(n*10)/10}function ready(){return connected&&peerOnline&&peerAudioReady}
+function render(){peerOnline=Date.now()-lastPeerSeen<7000;$("serverState").textContent=connected?"接続済み":"切断";$("peerState").textContent=peerOnline?"オンライン":"未接続";$("peerAudioState").textContent=role==="controller"?(peerAudioReady?"準備完了":"未準備"):(audioReady?"準備完了":"未準備");$("latency").textContent=latencyMs==null?"-- ms":latencyMs+" ms";let q=!connected||!peerOnline?"bad":latencyMs>800?"bad":latencyMs>300?"warn":"good";$("statusDot").className="dot "+q;$("statusTitle").textContent=!connected?"サーバー切断":!peerOnline?"相手端末を待機中":q==="good"?"接続良好":q==="warn"?"やや不安定":"通信不安定";$("statusSub").textContent=roomId?"ルーム "+roomId:"ルーム未接続";if(role==="controller"){let ok=ready()&&!programRunning;document.querySelectorAll(".commandBtn").forEach(b=>b.disabled=!ok);$("programStart").disabled=!ok;$("programCancel").disabled=!programRunning}}
+setInterval(render,1000);
+</script></body></html>
